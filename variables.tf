@@ -14,27 +14,20 @@ variable "vpc_cidr" {
   type = string
 }
 
-variable "public_subnet_1_cidr" {
-    description = "The CIDR block for the public subnet 1"
-    type        = string
+variable "number_of_public_subnets" {
+  description = "Total number of public subnets to be created"
+  type = number
+  default = 2
 }
-variable "public_subnet_2_cidr" {
-    description = "The CIDR block for the public subnet 2"
-    type        = string
+
+variable "number_of_private_subnets" {
+  description = "Total number of private subnets to be created"
+  type = number
+  default = 2
 }
-variable "private_subnet_1_cidr" {
-    description = "The CIDR block for the private subnet 1"
-    type        = string
-}
-variable "private_subnet_2_cidr" {
-    description = "The CIDR block for the private subnet 2"
-    type        = string
-}
-variable "secure_subnet_1_cidr" {
-    description = "The CIDR block for the secure subnet 1"
-    type        = string
-}
-variable "secure_subnet_2_cidr" {
-    description = "The CIDR block for the secure subnet 2"
-    type        = string
+
+variable "number_of_secure_subnets" {
+  description = "Total number of secure subnets to be created"
+  type = number
+  default = 2
 }
