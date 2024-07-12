@@ -12,7 +12,7 @@ resource "aws_vpc" "main" {
 }
 
 
-resource "aws_subnet" "public_subnet" {
+resource "aws_subnet" "public_subnets" {
   count = var.number_of_public_subnets
   vpc_id                  = aws_vpc.main.id
   cidr_block              = cidrsubnet(var.vpc_cidr,3,count.index)
@@ -23,7 +23,7 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
-resource "aws_subnet" "private_subnet" {
+resource "aws_subnet" "private_subnets" {
   count = var.number_of_private_subnets 
   vpc_id                  = aws_vpc.main.id
   cidr_block              = cidrsubnet(var.vpc_cidr,3,var.number_of_public_subnets + count.index)
@@ -34,7 +34,7 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-resource "aws_subnet" "secure_subnet" {
+resource "aws_subnet" "secure_subnets" {
   count = var.number_of_secure_subnets 
   vpc_id                  = aws_vpc.main.id
   cidr_block              = cidrsubnet(var.vpc_cidr,3,var.number_of_public_subnets + var.number_of_secure_subnets  + count.index)
@@ -63,7 +63,7 @@ resource "aws_eip" "eip" {
 # add a NAT gateway
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.eip.id
-  subnet_id     = aws_subnet.public_subnet[0].id
+  subnet_id     = aws_subnet.public_subnets[0].id
   tags = {
     Name = "${var.prefix}-nat"
   }
@@ -98,7 +98,7 @@ resource "aws_route_table" "private" {
 resource "aws_route_table_association" "public_subnet_rt_association" {
   count = var.number_of_public_subnets
   
-  subnet_id      = aws_subnet.public_subnet[count.index].id
+  subnet_id      = aws_subnet.public_subnets[count.index].id
   route_table_id = aws_route_table.public.id
 } 
 
@@ -107,6 +107,6 @@ resource "aws_route_table_association" "public_subnet_rt_association" {
 resource "aws_route_table_association" "private_subnet_rt_association" {
   count = var.number_of_private_subnets
   
-  subnet_id      = aws_subnet.private_subnet[count.index].id
+  subnet_id      = aws_subnet.private_subnets[count.index].id
   route_table_id = aws_route_table.private.id
 }
