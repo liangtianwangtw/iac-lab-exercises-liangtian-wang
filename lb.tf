@@ -3,7 +3,7 @@ resource "aws_lb" "lb" {
     internal           = false
     load_balancer_type = "application"
     security_groups    = [aws_security_group.lb_sg.id]
-    subnets = aws_subnet.public_subnets[*].id
+    subnets = module.main_vpc.public_subnets
 
     tags = {
         Name = "${var.prefix}-lb"
@@ -14,7 +14,7 @@ resource "aws_lb_target_group" "tg" {
     name        = "${var.prefix}-tg"
     port        = 8000
     protocol    = "HTTP"
-    vpc_id      = aws_vpc.main.id
+    vpc_id      = module.main_vpc.vpc_id
     target_type = "ip"
     health_check {
         healthy_threshold   = "5"
@@ -47,7 +47,7 @@ resource "aws_security_group" "lb_sg" {
     name        = "lb_sg"
     description = "Security group for load balancer"
 
-    vpc_id = aws_vpc.main.id
+    vpc_id = module.main_vpc.vpc_id
 
     ingress {
         from_port   = 80
